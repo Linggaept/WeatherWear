@@ -14,13 +14,22 @@ import {
 } from "lucide-react";
 
 export default function LandingPage() {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    // Cek preferensi user dari localStorage
+    const saved = localStorage.getItem("darkMode");
+    return saved ? JSON.parse(saved) : false;
+  });
 
   useEffect(() => {
+    // Simpan preferensi ke localStorage
+    localStorage.setItem("darkMode", JSON.stringify(darkMode));
+
     if (darkMode) {
       document.documentElement.classList.add("dark");
+      document.documentElement.style.colorScheme = "dark";
     } else {
       document.documentElement.classList.remove("dark");
+      document.documentElement.style.colorScheme = "light";
     }
   }, [darkMode]);
 
@@ -28,46 +37,49 @@ export default function LandingPage() {
     {
       icon: <Cloud className="w-6 h-6" />,
       title: "Real-time Weather",
-      description: "Data cuaca akurat dari OpenWeather API",
+      description: "Accurate weather data from OpenWeather API",
     },
     {
       icon: <Sparkles className="w-6 h-6" />,
       title: "AI Recommendations",
-      description: "Saran outfit pintar dari Google Gemini",
+      description: "Smart outfit suggestions from Google Gemini",
     },
     {
       icon: <Shirt className="w-6 h-6" />,
       title: "Outfit Suggestions",
-      description: "Rekomendasi pakaian sesuai cuaca hari ini",
+      description: "Outfit recommendations based on today's weather",
     },
     {
       icon: <Briefcase className="w-6 h-6" />,
       title: "Item Checklist",
-      description: "Daftar barang yang perlu dibawa",
+      description: "List of items to bring",
     },
   ];
 
   const howItWorks = [
     {
       step: "1",
-      title: "Masukkan Kota",
-      description: "Ketik nama kota yang ingin kamu cek cuacanya",
+      title: "Enter City",
+      description:
+        "Type the name of the city you want to check the weather for",
     },
     {
       step: "2",
-      title: "Data Cuaca Real-time",
-      description: "Sistem mengambil data cuaca terkini dari OpenWeather API",
+      title: "Real-time Weather Data",
+      description:
+        "The system retrieves current weather data from OpenWeather API",
     },
     {
       step: "3",
       title: "AI Processing",
       description:
-        "Gemini AI menganalisis kondisi cuaca untuk rekomendasi terbaik",
+        "Gemini AI analyzes the weather conditions to provide the best recommendations",
     },
     {
       step: "4",
-      title: "Dapatkan Rekomendasi",
-      description: "Terima saran outfit lengkap dengan item yang harus dibawa",
+      title: "Get Recommendations",
+      description:
+        "Receive outfit suggestions along with items you should bring",
     },
   ];
 
@@ -110,16 +122,16 @@ export default function LandingPage() {
             </div>
 
             <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
-              Cuaca Cerah,
+              Clear Weather,
               <br />
               <span className="bg-gradient-to-r from-purple-700 to-purple-900 dark:from-purple-400 dark:to-purple-600 bg-clip-text text-transparent">
-                Outfit Sempurna
+                Perfect Outfit
               </span>
             </h1>
 
             <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
-              Dapatkan rekomendasi outfit yang tepat berdasarkan kondisi cuaca
-              real-time dengan teknologi AI terdepan
+              Get the perfect outfit recommendations based on real-time weather
+              conditions with cutting-edge AI technology.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -127,12 +139,12 @@ export default function LandingPage() {
                 to="/app"
                 className="group px-8 py-4 bg-gradient-to-r from-purple-700 to-purple-900 dark:from-purple-600 dark:to-purple-800 text-white rounded-xl font-semibold hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center space-x-2"
               >
-                <span className="text-white">Mulai Sekarang</span>
+                <span className="text-white">Start Now</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform text-white" />
               </Link>
 
               <button className="px-8 py-4 bg-white dark:bg-gray-800 text-purple-700 dark:text-purple-400 rounded-xl font-semibold border-2 border-purple-200 dark:border-purple-700 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all duration-300">
-                Pelajari Lebih Lanjut
+                Learn More
               </button>
             </div>
           </div>
@@ -153,9 +165,9 @@ export default function LandingPage() {
         {/* Features Section */}
         <section className="container mx-auto px-6 py-20">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Fitur Unggulan</h2>
+            <h2 className="text-4xl font-bold mb-4">Features</h2>
             <p className="text-gray-600 dark:text-gray-400 text-lg">
-              Teknologi canggih untuk pengalaman terbaik
+              Advanced technology for the best experience
             </p>
           </div>
 
@@ -181,9 +193,9 @@ export default function LandingPage() {
         <section className="bg-purple-900 dark:bg-purple-950 text-white py-20">
           <div className="container mx-auto px-6">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold mb-4">Cara Kerja</h2>
+              <h2 className="text-4xl font-bold mb-4">How It Works</h2>
               <p className="text-purple-200 text-lg">
-                Mudah dan cepat dalam 4 langkah
+                Easy and fast in 4 steps
               </p>
             </div>
 
@@ -212,7 +224,7 @@ export default function LandingPage() {
         <section className="container mx-auto px-6 py-20">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl font-bold mb-4">
-              Teknologi yang Digunakan
+              Technology Behind the Scenes
             </h2>
             <p className="text-gray-600 dark:text-gray-400 text-lg mb-12">
               Powered by industry-leading APIs and AI
@@ -225,7 +237,7 @@ export default function LandingPage() {
                   OpenWeather API
                 </h3>
                 <p className="text-blue-700 dark:text-blue-300">
-                  Data cuaca real-time yang akurat dari seluruh dunia
+                  Accurate real-time weather data from around the world
                 </p>
               </div>
 
@@ -235,7 +247,7 @@ export default function LandingPage() {
                   Google Gemini AI
                 </h3>
                 <p className="text-purple-700 dark:text-purple-300">
-                  Rekomendasi outfit cerdas dengan AI terbaru
+                  Smart outfit recommendations with the latest AI
                 </p>
               </div>
             </div>
@@ -246,16 +258,18 @@ export default function LandingPage() {
         <section className="container mx-auto px-6 py-20">
           <div className="bg-gradient-to-r from-purple-700 to-purple-900 dark:from-purple-800 dark:to-purple-950 rounded-3xl p-12 md:p-16 text-center text-white shadow-2xl">
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              Siap untuk Tampil Sempurna?
+              Ready to Look Perfect?
             </h2>
             <p className="text-xl text-purple-100 mb-8 max-w-2xl mx-auto">
-              Mulai dapatkan rekomendasi outfit yang sesuai dengan cuaca hari
-              ini
+              Start getting outfit recommendations that match today's weather
             </p>
-            <button className="group px-10 py-5 bg-white text-purple-700 rounded-xl font-bold text-lg hover:bg-purple-50 hover:scale-105 transition-all duration-300 flex items-center space-x-2 mx-auto shadow-xl">
-              <span>Coba Sekarang Gratis</span>
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </button>
+            <Link
+              to="/app"
+              className="group px-10 py-5 bg-white text-purple-700 rounded-xl font-bold text-lg hover:bg-purple-50 hover:scale-105 transition-all duration-300 flex items-center space-x-2 mx-auto shadow-xl"
+            >
+              <span className="text-purple-700">Try Now for Free</span>
+              <ArrowRight className="w-5 h-5 text-purple-700 group-hover:translate-x-1 transition-transform" />
+            </Link>
           </div>
         </section>
 
@@ -269,7 +283,7 @@ export default function LandingPage() {
               </span>
             </div>
             <p className="text-gray-600 dark:text-gray-400">
-              © 2025 WeatherWear. Dibuat dengan ❤️ untuk outfit yang sempurna.
+              © 2025 WeatherWear. All rights reserved.
             </p>
           </div>
         </footer>

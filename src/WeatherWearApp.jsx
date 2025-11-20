@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import {
   Cloud,
   Sun,
@@ -22,6 +23,8 @@ export default function WeatherWearApp() {
   const [outfitRecommendation, setOutfitRecommendation] = useState(null);
   const [error, setError] = useState("");
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add("dark");
@@ -35,7 +38,7 @@ export default function WeatherWearApp() {
 
   const fetchWeather = async () => {
     if (!city.trim()) {
-      setError("Mohon masukkan nama kota");
+      setError("Please enter a city name.");
       return;
     }
 
@@ -51,26 +54,26 @@ export default function WeatherWearApp() {
       );
 
       if (!weatherResponse.ok) {
-        throw new Error("Kota tidak ditemukan. Coba lagi!");
+        throw new Error("City not found. Please check the city name and try again.");
       }
 
       const weather = await weatherResponse.json();
       setWeatherData(weather);
 
       // Prepare prompt for Gemini
-      const prompt = `Buat rekomendasi outfit berdasarkan kondisi cuaca berikut:
+      const prompt = `Create outfit recommendations based on the following weather conditions:
 
-Kota: ${weather.name}
-Suhu: ${weather.main.temp}°C
-Cuaca: ${weather.weather[0].main} (${weather.weather[0].description})
-Kelembapan: ${weather.main.humidity}%
-Angin: ${weather.wind.speed} m/s
+City: ${weather.name}
+Temperature: ${weather.main.temp}°C
+Weather: ${weather.weather[0].main} (${weather.weather[0].description})
+Humidity: ${weather.main.humidity}%
+Wind: ${weather.wind.speed} m/s
 
-Berikan rekomendasi dalam format berikut:
-1. Outfit yang disarankan (3-4 item pakaian)
-2. Barang yang perlu dibawa (2-3 item)
+Provide the recommendations in the following format:
+1. Outfit Recommendations (3-4 items)
+2. Items to Bring (2-3 items)
 
-Jawab dalam bahasa Indonesia dengan gaya casual dan friendly.`;
+Answer in English with a casual and friendly tone.`;
 
       // Call Gemini API
       const geminiResponse = await fetch(
@@ -91,7 +94,7 @@ Jawab dalam bahasa Indonesia dengan gaya casual dan friendly.`;
 
       setOutfitRecommendation(recommendation);
     } catch (err) {
-      setError(err.message || "Terjadi kesalahan. Silakan coba lagi.");
+      setError(err.message || "An error occurred. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -173,13 +176,20 @@ Jawab dalam bahasa Indonesia dengan gaya casual dan friendly.`;
           </div>
 
           <div className="flex items-center space-x-4">
+            <button
+              onClick={() => navigate('/')}
+              className="flex items-center space-x-2 px-4 py-2 text-purple-700 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-900/30 rounded-lg transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span className="hidden sm:inline">Back</span>
+            </button>
             {weatherData && (
               <button
                 onClick={resetApp}
                 className="flex items-center space-x-2 px-4 py-2 text-purple-700 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-900/30 rounded-lg transition-colors"
               >
                 <ArrowLeft className="w-4 h-4" />
-                <span className="hidden sm:inline">Cari Lagi</span>
+                <span className="hidden sm:inline">Search Again</span>
               </button>
             )}
             <button
@@ -201,7 +211,7 @@ Jawab dalam bahasa Indonesia dengan gaya casual dan friendly.`;
             {/* Search Box */}
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 mb-8">
               <h2 className="text-3xl font-bold mb-6 text-center">
-                {weatherData ? "Hasil Pencarian" : "Cek Cuaca & Outfit"}
+                {weatherData ? "Search Results" : "Check Weather & Outfit"}
               </h2>
 
               {!weatherData && (
@@ -213,7 +223,7 @@ Jawab dalam bahasa Indonesia dengan gaya casual dan friendly.`;
                       value={city}
                       onChange={(e) => setCity(e.target.value)}
                       onKeyPress={(e) => e.key === "Enter" && fetchWeather()}
-                      placeholder="Masukkan nama kota (contoh: Jakarta)..."
+                      placeholder="Input city name, e.g., London"
                       className="w-full pl-12 pr-4 py-4 rounded-xl border-2 border-purple-200 dark:border-purple-700 bg-white dark:bg-gray-700 focus:border-purple-500 dark:focus:border-purple-400 focus:outline-none text-lg"
                     />
                   </div>
@@ -230,7 +240,7 @@ Jawab dalam bahasa Indonesia dengan gaya casual dan friendly.`;
                       </>
                     ) : (
                       <>
-                        <span>Cek Cuaca</span>
+                        <span>Check Now</span>
                         <Sparkles className="w-5 h-5" />
                       </>
                     )}
@@ -252,7 +262,7 @@ Jawab dalam bahasa Indonesia dengan gaya casual dan friendly.`;
                 <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 hover:shadow-2xl transition-shadow">
                   <h3 className="text-2xl font-bold mb-6 flex items-center space-x-2">
                     <Cloud className="w-6 h-6 text-purple-700 dark:text-purple-400" />
-                    <span>Cuaca Hari Ini</span>
+                    <span>Today's Weather</span>
                   </h3>
 
                   <div className="text-center mb-6">
@@ -275,7 +285,7 @@ Jawab dalam bahasa Indonesia dengan gaya casual dan friendly.`;
                       <div className="flex items-center space-x-2">
                         <ThermometerSun className="w-5 h-5 text-orange-500" />
                         <span className="text-gray-600 dark:text-gray-400">
-                          Terasa Seperti
+                          Feels Like
                         </span>
                       </div>
                       <span className="font-semibold text-lg">
@@ -287,7 +297,7 @@ Jawab dalam bahasa Indonesia dengan gaya casual dan friendly.`;
                       <div className="flex items-center space-x-2">
                         <Droplets className="w-5 h-5 text-blue-500" />
                         <span className="text-gray-600 dark:text-gray-400">
-                          Kelembapan
+                          Humidity
                         </span>
                       </div>
                       <span className="font-semibold text-lg">
@@ -299,7 +309,7 @@ Jawab dalam bahasa Indonesia dengan gaya casual dan friendly.`;
                       <div className="flex items-center space-x-2">
                         <Wind className="w-5 h-5 text-gray-500" />
                         <span className="text-gray-600 dark:text-gray-400">
-                          Kecepatan Angin
+                          Wind Speed
                         </span>
                       </div>
                       <span className="font-semibold text-lg">
@@ -313,14 +323,14 @@ Jawab dalam bahasa Indonesia dengan gaya casual dan friendly.`;
                 <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 hover:shadow-2xl transition-shadow">
                   <h3 className="text-2xl font-bold mb-6 flex items-center space-x-2">
                     <Shirt className="w-6 h-6 text-purple-700 dark:text-purple-400" />
-                    <span>Rekomendasi Outfit</span>
+                    <span>Outfit Recommendations</span>
                   </h3>
 
                   {loading ? (
                     <div className="flex flex-col items-center justify-center py-12">
                       <Loader className="w-12 h-12 animate-spin text-purple-700 dark:text-purple-400 mb-4" />
                       <p className="text-gray-600 dark:text-gray-400">
-                        AI sedang membuat rekomendasi...
+                        Loading outfit recommendations...
                       </p>
                     </div>
                   ) : outfitRecommendation ? (
@@ -332,7 +342,7 @@ Jawab dalam bahasa Indonesia dengan gaya casual dan friendly.`;
                   ) : (
                     <div className="text-center py-12 text-gray-500 dark:text-gray-400">
                       <Sparkles className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                      <p>Rekomendasi outfit akan muncul di sini</p>
+                      <p>Outfit recommendations will appear here</p>
                     </div>
                   )}
                 </div>
@@ -343,13 +353,13 @@ Jawab dalam bahasa Indonesia dengan gaya casual dan friendly.`;
             {!weatherData && !loading && !error && (
               <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-12 text-center">
                 <Cloud className="w-24 h-24 mx-auto mb-6 text-purple-300 dark:text-purple-700" />
-                <h3 className="text-2xl font-bold mb-4">Siap untuk Memulai?</h3>
+                <h3 className="text-2xl font-bold mb-4">Ready to Start?</h3>
                 <p className="text-gray-600 dark:text-gray-400 text-lg mb-2">
-                  Masukkan nama kota untuk mendapatkan rekomendasi outfit
-                  berdasarkan cuaca hari ini
+                  Enter a city name to get outfit recommendations
+                  based on today's weather
                 </p>
                 <p className="text-sm text-gray-500 dark:text-gray-500">
-                  Contoh: Jakarta, Bandung, Surabaya, Yogyakarta
+                  Example: London, New York, Tokyo, Paris
                 </p>
               </div>
             )}
@@ -360,7 +370,7 @@ Jawab dalam bahasa Indonesia dengan gaya casual dan friendly.`;
         <footer className="border-t border-purple-200 dark:border-purple-900 py-8 mt-12">
           <div className="container mx-auto px-6 text-center">
             <p className="text-gray-600 dark:text-gray-400 text-sm">
-              © 2025 WeatherWear. Powered by OpenWeather API & AI
+              © 2025 WeatherWear. All rights reserved.
             </p>
           </div>
         </footer>
